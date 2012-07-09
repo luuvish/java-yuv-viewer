@@ -1,0 +1,55 @@
+<project name="java-yuv-viewer" default="dist" basedir=".">
+  <description>
+    Java YUV image viewer build file
+  </description>
+
+  <!-- set global properties for this build -->
+  <property name="src" location="source"/>
+  <property name="build" location="classes"/>
+  <property name="dist" location="dist"/>
+
+  <property name="version" value="0.1"/>
+  <property name="target" value="java-yuv-viewer-${version}.jar"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="compile" depends="init" description="compile the source">
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}" includeAntRuntime="false"/>
+  </target>
+
+  <target name="dist" depends="compile" description="generate the distribution">
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}/lib"/>
+
+    <!-- Put everything in ${build} into the java-yuv-viewer-${DSTAMP}.jar file -->
+    <jar jarfile="${dist}/lib/java-yuv-viewer-${DSTAMP}.jar" basedir="${build}"
+         manifest="${src}/manifest.txt"/>
+    <copy file="${dist}/lib/java-yuv-viewer-${DSTAMP}.jar" tofile="${basedir}/${target}"/>
+  </target>
+
+  <target name="clean" description="clean up">
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+
+  <target name="profile" description="run profiling">
+    <!-- Run Java YUV image viewer with profiling -->
+    <!-- java -agentlib:hprof=heap=sites,cpu=times -jar java-yuv-viewer.jar -->
+    <java jar="${basedir}/${target}" fork="true">
+      <jvmarg value="-agentlib:hprof=heap=sites,cpu=times"/>
+    </java>
+  </target>
+
+  <target name="run" description="run it">
+    <!-- Run Java YUV image viewer -->
+    <!-- java -jar java-yuv-viewer.jar -->
+    <java jar="${basedir}/${target}" fork="true"/>
+  </target>
+</project>
